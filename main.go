@@ -8,10 +8,13 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/rs/zerolog/pkgerrors"
 	"gomock/api"
+	"gomock/common"
 	"gomock/middleware"
-	"gomock/resource"
+	"gopkg.in/yaml.v3"
 	"os"
 )
+
+const configFile = "./config/dev.yaml"
 
 func main() {
 	r := gin.New()
@@ -19,9 +22,12 @@ func main() {
 	r.Use(middleware.DefaultStructedLogger())
 	r.Use(gin.Recovery())
 
-	resource.NewAppContext()
+	config := loadConfig(configFile)
 
-	defer resource.AppCtx.DestroyAppCtx()
+	log.Info().Msg(fmt.Sprintf("config is %v", config))
+	common.NewAppContext(config)
+
+	defer common.AppCtx.DestroyAppCtx()
 
 	r.GET("/chat", api.GetRouter)
 
@@ -40,4 +46,24 @@ func main() {
 	r.Run(":8888")
 
 	fmt.Println("hhh")
+}
+
+func loadConfig(path string) common.Config {
+	data, err := os.ReadFile(path)
+
+	if err != nil {
+		log.Error().Msg("read config error")
+		panic(err)
+	}
+
+	var config common.Config
+
+	err = yaml.Unmarshal(data, &config)
+
+	if err != nil {
+		log.Error().Msg("invalid yaml format")
+		panic(err)
+	}
+
+	return config
 }

@@ -1,4 +1,4 @@
-package resource
+package common
 
 import (
 	"context"
@@ -24,16 +24,15 @@ var (
 	AppCtx            = &AppContext{}
 )
 
-func NewAppContext() {
-	setUpMysql()
+func NewAppContext(config Config) {
+	setUpMysql(config)
 	setUpCache()
 	//setUpRedis()
 	return
 }
 
-func setUpMysql() {
-	db, err := sql.Open("mysql",
-		"root:0310@tcp(localhost:3307)/gomock?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai")
+func setUpMysql(config Config) {
+	db, err := sql.Open("mysql", config.Mysql.Dsn)
 
 	if err != nil {
 		panic(err)

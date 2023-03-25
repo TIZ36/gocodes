@@ -2,7 +2,7 @@ package mysql
 
 import (
 	"fmt"
-	"gomock/resource"
+	"gomock/common"
 )
 
 const (
@@ -22,7 +22,7 @@ type UserBasicInfoRepo struct{}
 func (basicInfoRepo *UserBasicInfoRepo) FindBasicInfoByUid(uid int64) (*BasicInfo, error) {
 	var basicInfo BasicInfo
 	sql := fmt.Sprintf("SELECT * FROM %s WHERE `uid` = %v", TABLE, uid)
-	err := resource.AppCtx.MysqlClient.QueryRow(sql).Scan(
+	err := common.AppCtx.MysqlClient.QueryRow(sql).Scan(
 		&basicInfo.Uid,
 		&basicInfo.CurStage,
 		&basicInfo.MaincityLevel,
@@ -44,7 +44,7 @@ func (basicInfoRepo *UserBasicInfoRepo) InsertBasicInfo(dbBasicInfo BasicInfo) e
 		dbBasicInfo.MaincityLevel,
 	)
 
-	stm, err := resource.AppCtx.MysqlClient.Prepare(
+	stm, err := common.AppCtx.MysqlClient.Prepare(
 		"INSERT INTO `basic_info` (`uid`, `cur_stage`, `maincity_level`) VALUES (?, ?, ?)")
 
 	defer stm.Close()

@@ -3,7 +3,6 @@ package common
 import (
 	"encoding/json"
 	"fmt"
-	"gomock/resource"
 )
 
 type DbCache[K any, V *any] interface {
@@ -21,7 +20,7 @@ func (commonCache *CommonCache[K, V]) Get(k any) (any, error) {
 
 	var re V
 	key := Key(k)
-	cacheRe, err := resource.AppCtx.InMemoryCache.Get(key)
+	cacheRe, err := AppCtx.InMemoryCache.Get(key)
 
 	if err != nil {
 		return nil, err
@@ -37,7 +36,7 @@ func (commonCache *CommonCache[K, V]) Put(key K, value V) error {
 	kStr := Key(key)
 	vBytes, _ := json.Marshal(value)
 
-	resource.AppCtx.InMemoryCache.Set(kStr, vBytes)
+	AppCtx.InMemoryCache.Set(kStr, vBytes)
 	return nil
 }
 

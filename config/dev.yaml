@@ -1,0 +1,7 @@
+mysql:
+  dsn: "root:0310@tcp(localhost:3306)/gomock?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai"
+
+redis:
+  host: "127.0.0.1:6379"
+  user: "root"
+  password: "123456"
